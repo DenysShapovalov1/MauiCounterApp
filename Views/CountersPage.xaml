@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CounterProject.Views.CountersPage"
+             Title="Counters">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Text="Add"
+            IconImageSource="plus.png"
+            Order="Primary"
+            Priority="0"
+            Clicked="GoTo_CreateCounterPage" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="12">
+
+            <Border
+                Padding="12"
+                Stroke="#DDDDDD"
+                StrokeShape="RoundRectangle 12">
+
+                <HorizontalStackLayout
+                    Spacing="15"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="Counter"
+                        FontSize="16"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start" />
+
+                    <Button
+                        Text="-"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        Clicked="Sub_Click" />
+
+                    <Label
+                        x:Name="Counter_Text"
+                        Text="0"
+                        FontSize="20"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center" />
+
+                    <Button
+                        Text="+"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        Clicked="Add_Click" />
+
+                </HorizontalStackLayout>
+            </Border>
+
+            <VerticalStackLayout
+                x:Name="DynamicCountersLayout"
+                Spacing="10" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

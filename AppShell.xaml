@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="CounterProject.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:CounterProject"
+    xmlns:views="clr-namespace:CounterProject.Views"
+    Title="CounterProject">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:CountersPage}"
+        Route="CountersPage" />
+    <ShellContent
+        Title="AddCounterPage"
+        ContentTemplate="{DataTemplate views:AddCounterPage}"
+        Route="AddCounterPage" />
+    
+</Shell>
