@@ -156,4 +156,9 @@ public partial class CountersPage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(AddCounterPage));
     }
+
+	 private void Save_Counters(object sender, EventArgs e)
+	 {
+	     CounterStorage.SaveCounters(allcounter.counters);
+	 }
 }
