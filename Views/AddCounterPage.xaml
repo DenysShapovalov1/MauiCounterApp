@@ -2,22 +2,30 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CounterProject.Views.AddCounterPage"
+             xmlns:models="clr-namespace:CounterProject.Models"
              Title="AddCounterPage">
-    <VerticalStackLayout>
+    <VerticalStackLayout
+        Spacing="20">
         <Label 
-            Text="Dodaj swój licznik"
+            Text="{Binding HeaderText}"
             FontSize="Large"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
         <Editor 
             x:Name="TextEditor"
-            Placeholder="Wpisz swoją nazwę licznika"/>
+            WidthRequest="350"
+            HeightRequest="50"
+            Placeholder="{Binding NameTextEditorPlaceholder}"/>
         <Editor 
             x:Name="TextEditorNum"
-            Placeholder="Wpisz początkową wartość licznika(pole może puste, wtedy początkową wartością będzie 0)"/>
+            WidthRequest="350"
+            HeightRequest="50"
+            Placeholder="{Binding NumTextEditorPlaceholder}"/>
         <Button 
             x:Name="CreateCounterButton"
-            Text="Dodaj nowy licznik"
+            WidthRequest="350"
+            HeightRequest="50"
+            Text="{Binding CreateCounterButtonText}"
             Clicked="Create_Counter"/>
     </VerticalStackLayout>
 </ContentPage>
