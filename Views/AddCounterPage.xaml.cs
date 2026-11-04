@@ -9,6 +9,8 @@ public partial class AddCounterPage : ContentPage
     public AddCounterPage()
 	{
 		InitializeComponent();
+
+        BindingContext = new Models.Counter();
     }
 
     private async void Create_Counter(object sender, EventArgs e)
@@ -16,13 +18,26 @@ public partial class AddCounterPage : ContentPage
 		Models.Counter counter = new Models.Counter();
 
         counter.Name = TextEditor.Text;
-		if (string.IsNullOrEmpty(TextEditorNum.Text))
-			counter.StartCount = 0;
-        else int.TryParse(TextEditorNum.Text, out counter.StartCount);
+        if (string.IsNullOrEmpty(TextEditorNum.Text))
+        {
+            counter.StartCount = 0;
+        }
+        else
+        {
+            if (int.TryParse(TextEditorNum.Text, out int number))
+            {
+                counter.StartCount = number;
+            }
+            else
+            {
+                await DisplayAlert("Blad", "Wprowadz liczbe", "OK");
+                return;
+            }
+        }
 
-        allcounter.counters.Add(counter);
+         allcounter.counters.Add(counter);
 
-        CounterStorage.SaveCounters(allcounter.counters);
+        CounterStorage.SaveCounters(allcounter.counters.ToList());
 
         await Shell.Current.GoToAsync("..");
 		
