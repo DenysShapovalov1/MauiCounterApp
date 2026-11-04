@@ -18,6 +18,11 @@ public partial class AddCounterPage : ContentPage
 		Models.Counter counter = new Models.Counter();
 
         counter.Name = TextEditor.Text;
+        if (string.IsNullOrEmpty(counter.Name))
+        {
+            await DisplayAlert("Błąd", "Wprowadź nazwę licznika", "OK");
+            return;
+        }
         if (string.IsNullOrEmpty(TextEditorNum.Text))
         {
             counter.StartCount = 0;
@@ -30,7 +35,7 @@ public partial class AddCounterPage : ContentPage
             }
             else
             {
-                await DisplayAlert("Blad", "Wprowadz liczbe", "OK");
+                await DisplayAlert("Błąd", "Wprowadź liczbę", "OK");
                 return;
             }
         }
