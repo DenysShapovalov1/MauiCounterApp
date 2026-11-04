@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,17 +15,22 @@ namespace CounterProject.Models
 
         public static void SaveCounters(List<Counter> counters)
         {
-            var document = new XDocument(
-                new XElement("Counters",
-                    counters.Select(counter =>
-                        new XElement("Counter",
-                            new XElement("Name", counter.Name),
-                            new XElement("StartCount", counter.StartCount)
-                        )
+            var document = File.Exists(FilePath)
+                ? XDocument.Load(FilePath)
+                : new XDocument(new XElement("Counters"));
+        
+            document.Root!.Elements("Counter").Remove();
+        
+            foreach (var counter in counters)
+            {
+                document.Root.Add(
+                    new XElement("Counter",
+                        new XElement("Name", counter.Name),
+                        new XElement("StartCount", counter.StartCount)
                     )
-                )
-            );
-
+                );
+            }
+        
             document.Save(FilePath);
         }
 
