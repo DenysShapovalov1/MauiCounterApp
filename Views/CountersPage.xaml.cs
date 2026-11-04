@@ -19,7 +19,19 @@ public partial class CountersPage : ContentPage
 
         count = CounterStorage.LoadStandardCounter();
         Counter_Text.Text = count.ToString();
+        BindingContext = new Models.Counter();
 
+        CountersCollection.ItemsSource = allcounter.counters;
+        LoadCounters();
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        LoadCounters();
+    }
+
+    private void LoadCounters()
+    {
         allcounter.counters.Clear();
 
         foreach (var counter in CounterStorage.LoadCounters())
@@ -27,14 +39,6 @@ public partial class CountersPage : ContentPage
             allcounter.counters.Add(counter);
         }
 
-        CheckCounters();
-
-
-    }
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        CheckCounters();
     }
 
     private void Add_Click(object sender, EventArgs e)
@@ -53,102 +57,41 @@ public partial class CountersPage : ContentPage
         CounterStorage.SaveStandardCounter(count);
     }
 
-    private void AddCounter(Models.Counter counter, Label label)
+    private void AddCounter_Clicked(object sender, EventArgs e)
     {
-        counter.StartCount++;
-        label.Text = $"{counter.Name}: {counter.StartCount}";
-
-    }
-
-    private void SubCounter(Models.Counter counter, Label label)
-    {
-        counter.StartCount--;
-        label.Text = $"{counter.Name}: {counter.StartCount}";
-
-    }
-
-    private void CheckCounters()
-    {
-        DynamicCountersLayout.Children.Clear();
-
-        foreach (var counter in allcounter.counters)
+        if (sender is Button button &&
+            button.BindingContext is Models.Counter counter)
         {
-            var nameLabel = new Label
+            int index = allcounter.counters.IndexOf(counter);
+
+            counter.StartCount++;
+
+            allcounter.counters[index] = new Models.Counter
             {
-                Text = counter.Name,
-                FontSize = 16,
-                TextColor = Colors.White,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.StartAndExpand
+                Name = counter.Name,
+                StartCount = counter.StartCount
             };
 
-            var countLabel = new Label
+            CounterStorage.SaveCounters(allcounter.counters.ToList());
+        }
+    }
+
+    private void SubCounter_Clicked(object sender, EventArgs e)
+    {
+        if (sender is Button button &&
+            button.BindingContext is Models.Counter counter)
+        {
+            int index = allcounter.counters.IndexOf(counter);
+
+            counter.StartCount--;
+
+            allcounter.counters[index] = new Models.Counter
             {
-                Text = counter.StartCount.ToString(),
-                FontSize = 20,
-                TextColor = Colors.White,
-                WidthRequest = 40,
-                HorizontalTextAlignment = TextAlignment.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                VerticalOptions = LayoutOptions.Center
+                Name = counter.Name,
+                StartCount = counter.StartCount
             };
 
-            var minusButton = new Button
-            {
-                Text = "-",
-                WidthRequest = 44,
-                HeightRequest = 44,
-                Padding = 0,
-                CornerRadius = 10
-            };
-
-            minusButton.Clicked += (sender, e) =>
-            {
-                counter.StartCount--;
-                countLabel.Text = counter.StartCount.ToString();
-                CounterStorage.SaveCounters(allcounter.counters);
-            };
-
-            var plusButton = new Button
-            {
-                Text = "+",
-                WidthRequest = 44,
-                HeightRequest = 44,
-                Padding = 0,
-                CornerRadius = 10
-            };
-
-            plusButton.Clicked += (sender, e) =>
-            {
-                counter.StartCount++;
-                countLabel.Text = counter.StartCount.ToString();
-                CounterStorage.SaveCounters(allcounter.counters);
-            };
-
-            var counterRow = new HorizontalStackLayout
-            {
-                Spacing = 12,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            counterRow.Children.Add(nameLabel);
-            counterRow.Children.Add(minusButton);
-            counterRow.Children.Add(countLabel);
-            counterRow.Children.Add(plusButton);
-
-            var counterBorder = new Border
-            {
-                Padding = 12,
-                Stroke = Colors.Gray,
-                StrokeThickness = 1,
-                StrokeShape = new RoundRectangle
-                {
-                    CornerRadius = 12
-                },
-                Content = counterRow
-            };
-
-            DynamicCountersLayout.Children.Add(counterBorder);
+            CounterStorage.SaveCounters(allcounter.counters.ToList());
         }
     }
 
@@ -156,9 +99,4 @@ public partial class CountersPage : ContentPage
     {
         await Shell.Current.GoToAsync(nameof(AddCounterPage));
     }
-
-	 private void Save_Counters(object sender, EventArgs e)
-	 {
-	     CounterStorage.SaveCounters(allcounter.counters);
-	 }
 }
