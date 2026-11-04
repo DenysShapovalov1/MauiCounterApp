@@ -2,66 +2,119 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CounterProject.Views.CountersPage"
+             xmlns:models="clr-namespace:CounterProject.Models"
              Title="Counters">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem
-            Text="Add"
-            IconImageSource="plus.png"
-            Order="Primary"
-            Priority="0"
+            Text="{Binding AddCounterTextButton}"
             Clicked="GoTo_CreateCounterPage" />
     </ContentPage.ToolbarItems>
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="20"
-            Spacing="12">
+    <Grid Padding="20"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
 
-            <Border
-                Padding="12"
-                Stroke="#DDDDDD"
-                StrokeShape="RoundRectangle 12">
+        <Border
+            Grid.Row="0"
+            Padding="12"
+            Stroke="#DDDDDD"
+            StrokeShape="RoundRectangle 12">
 
-                <HorizontalStackLayout
-                    Spacing="15"
-                    VerticalOptions="Center">
+            <HorizontalStackLayout
+                Spacing="15"
+                VerticalOptions="Center">
 
-                    <Label
-                        Text="Counter"
-                        FontSize="16"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Start" />
+                <Label
+                    Text="{Binding DefaultCounterName}"
+                    FontSize="16"
+                    TextColor="Black"
+                    VerticalOptions="Center"
+                    HorizontalOptions="StartAndExpand" />
 
-                    <Button
-                        Text="-"
-                        WidthRequest="40"
-                        HeightRequest="40"
-                        Padding="0"
-                        Clicked="Sub_Click" />
+                <Button
+                    Text="{Binding SubTextButton}"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    Padding="0"
+                    Clicked="Sub_Click" />
 
-                    <Label
-                        x:Name="Counter_Text"
-                        Text="0"
-                        FontSize="20"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center" />
+                <Label
+                    x:Name="Counter_Text"
+                    Text="{Binding DefaultCounterStartCount}"
+                    TextColor="Black"
+                    FontSize="20"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center" />
 
-                    <Button
-                        Text="+"
-                        WidthRequest="40"
-                        HeightRequest="40"
-                        Padding="0"
-                        Clicked="Add_Click" />
+                <Button
+                    Text="{Binding AddTextButton}"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    Padding="0"
+                    Clicked="Add_Click" />
 
-                </HorizontalStackLayout>
-            </Border>
+            </HorizontalStackLayout>
+        </Border>
 
-            <VerticalStackLayout
-                x:Name="DynamicCountersLayout"
-                Spacing="10" />
+        <CollectionView
+            x:Name="CountersCollection"
+            Grid.Row="1"
+            SelectionMode="None">
 
-        </VerticalStackLayout>
-    </ScrollView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border
+                        Padding="12"
+                        Margin="0,0,0,10"
+                        Stroke="#DDDDDD"
+                        StrokeShape="RoundRectangle 12">
+
+                        <HorizontalStackLayout
+                            Spacing="12"
+                            VerticalOptions="Center">
+
+                            <Label
+                                Text="{Binding Name}"
+                                FontSize="16"
+                                TextColor="Black"
+                                VerticalOptions="Center"
+                                HorizontalOptions="StartAndExpand" />
+
+                            <Button
+                                Text="{Binding SubTextButton}"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="0"
+                                CornerRadius="10"
+                                Clicked="SubCounter_Clicked" />
+
+                            <Label
+                                Text="{Binding StartCount}"
+                                FontSize="20"
+                                TextColor="Black"
+                                WidthRequest="40"
+                                HorizontalTextAlignment="Center"
+                                VerticalTextAlignment="Center"
+                                VerticalOptions="Center" />
+
+                            <Button
+                                Text="{Binding AddTextButton}"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="0"
+                                CornerRadius="10"
+                                Clicked="AddCounter_Clicked" />
+
+                        </HorizontalStackLayout>
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
 
 </ContentPage>
