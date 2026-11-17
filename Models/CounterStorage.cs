@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using System.Xml.Linq;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace CounterProject.Models
 {
@@ -15,60 +10,106 @@ namespace CounterProject.Models
 
         public static void SaveCounters(List<Counter> counters)
         {
-            var document = File.Exists(FilePath)
-                ? XDocument.Load(FilePath)
-                : new XDocument(new XElement("Counters"));
-        
-            document.Root!.Elements("Counter").Remove();
-        
-            foreach (var counter in counters)
+            XDocument document;
+
+            if (File.Exists(FilePath))
             {
-                document.Root.Add(
-                    new XElement("Counter",
-                        new XElement("Name", counter.Name),
-                        new XElement("StartCount", counter.StartCount)
-                    )
-                );
+                document = XDocument.Load(FilePath);
             }
-        
+            else
+            {
+                document = new XDocument(new XElement("Counters"));
+            }
+
+            document.Root.Elements("Counter").Remove();
+
+            foreach (Counter counter in counters)
+            {
+                XElement newCounter = new XElement("Counter");
+
+                newCounter.Add(new XElement("Name", counter.Name));
+                newCounter.Add(new XElement("StartCount", counter.StartCount));
+                newCounter.Add(new XElement("CurrentCount", counter.CurrentCount));
+
+                document.Root.Add(newCounter);
+            }
+
             document.Save(FilePath);
         }
 
         public static List<Counter> LoadCounters()
         {
-            if (!File.Exists(FilePath))
-                return new List<Counter>();
+            List<Counter> counters = new List<Counter>();
 
-            var document = XDocument.Load(FilePath);
+            if (File.Exists(FilePath) == false)
+            {
+                return counters;
+            }
 
-            return document.Root?
-                .Elements("Counter")
-                .Select(element => new Counter
+            XDocument document = XDocument.Load(FilePath);
+
+            foreach (XElement element in document.Root.Elements("Counter"))
+            {
+                Counter counter = new Counter();
+
+                counter.Name = "Counter";
+
+                if (element.Element("Name") != null)
                 {
-                    Name = (string?)element.Element("Name") ?? "Counter",
-                    StartCount = (int?)element.Element("StartCount") ?? 0
-                })
-                .ToList() ?? new List<Counter>();
+                    counter.Name = element.Element("Name").Value;
+                }
+
+                if (element.Element("StartCount") != null)
+                {
+                    counter.StartCount = int.Parse(element.Element("StartCount").Value);
+                }
+
+                counter.CurrentCount = counter.StartCount;
+
+                if (element.Element("CurrentCount") != null)
+                {
+                    counter.CurrentCount = int.Parse(element.Element("CurrentCount").Value);
+                }
+
+                counters.Add(counter);
+            }
+
+            return counters;
         }
 
         public static void SaveStandardCounter(int count)
         {
-            var document = File.Exists(FilePath)
-                ? XDocument.Load(FilePath)
-                : new XDocument(new XElement("Counters"));
+            XDocument document;
 
-            document.Root!.SetElementValue("StandardCounter", count);
+            if (File.Exists(FilePath))
+            {
+                document = XDocument.Load(FilePath);
+            }
+            else
+            {
+                document = new XDocument(new XElement("Counters"));
+            }
+
+            document.Root.SetElementValue("StandardCounter", count);
+
             document.Save(FilePath);
         }
 
         public static int LoadStandardCounter()
         {
-            if (!File.Exists(FilePath))
+            if (File.Exists(FilePath) == false)
+            {
                 return 0;
+            }
 
-            var document = XDocument.Load(FilePath);
+            XDocument document = XDocument.Load(FilePath);
 
-            return (int?)document.Root?.Element("StandardCounter") ?? 0;
+            if (document.Root.Element("StandardCounter") != null)
+            {
+                return int.Parse(document.Root.Element("StandardCounter").Value);
+            }
+
+            return 0;
         }
     }
 }
