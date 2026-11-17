@@ -1,50 +1,51 @@
+
 using CounterProject.Models;
-using System.Diagnostics;
-using System.Threading.Tasks;
+
 namespace CounterProject.Views;
 
 public partial class AddCounterPage : ContentPage
 {
-    Models.AllCounters allcounter = Models.AllCounters.Instance;
-    public AddCounterPage()
-	{
-		InitializeComponent();
+    private readonly Models.AllCounters allcounter =
+        Models.AllCounters.Instance;
 
-        BindingContext = new Models.Counter();
+    public AddCounterPage()
+    {
+        InitializeComponent();
+
+        BindingContext = new Counter();
     }
 
     private async void Create_Counter(object sender, EventArgs e)
     {
-		Models.Counter counter = new Models.Counter();
+        Counter counter = new Counter();
 
         counter.Name = TextEditor.Text;
+
         if (string.IsNullOrEmpty(counter.Name))
         {
-            await DisplayAlert("Błąd", "Wprowadź nazwę licznika", "OK");
+            await DisplayAlert("Bład", "Pole z nazwą nie może być puste!", "OK");
             return;
         }
-        if (string.IsNullOrEmpty(TextEditorNum.Text))
+
+        if (string.IsNullOrWhiteSpace(TextEditorNum.Text))
         {
             counter.StartCount = 0;
         }
+        else if (int.TryParse(TextEditorNum.Text, out int number))
+        {
+            counter.StartCount = number;
+        }
         else
         {
-            if (int.TryParse(TextEditorNum.Text, out int number))
-            {
-                counter.StartCount = number;
-            }
-            else
-            {
-                await DisplayAlert("Błąd", "Wprowadź liczbę", "OK");
-                return;
-            }
+            await DisplayAlert("Bład", "Wprowadz liczbę", "OK");
+            return;
         }
 
-         allcounter.counters.Add(counter);
+        allcounter.counters.Add(counter);
 
-        CounterStorage.SaveCounters(allcounter.counters.ToList());
+        CounterStorage.SaveCounters(
+            allcounter.counters.ToList());
 
         await Shell.Current.GoToAsync("..");
-		
     }
 }
