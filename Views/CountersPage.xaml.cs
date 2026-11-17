@@ -1,32 +1,26 @@
+
 using CounterProject.Models;
-using Microsoft.Maui.Controls.Shapes;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Reflection;
-using System.Xml;
 
 namespace CounterProject.Views;
 
 public partial class CountersPage : ContentPage
 {
-    int count = 0;
+    private int count;
 
-    Models.AllCounters allcounter = Models.AllCounters.Instance;
+    private readonly Models.AllCounters allcounter =
+        Models.AllCounters.Instance;
 
     public CountersPage()
-	{
+    {
         InitializeComponent();
 
         count = CounterStorage.LoadStandardCounter();
         Counter_Text.Text = count.ToString();
-        BindingContext = new Models.Counter();
+
+        BindingContext = new Counter();
 
         CountersCollection.ItemsSource = allcounter.counters;
-        LoadCounters();
-    }
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
+
         LoadCounters();
     }
 
@@ -38,7 +32,6 @@ public partial class CountersPage : ContentPage
         {
             allcounter.counters.Add(counter);
         }
-
     }
 
     private void Add_Click(object sender, EventArgs e)
@@ -59,43 +52,26 @@ public partial class CountersPage : ContentPage
 
     private void AddCounter_Clicked(object sender, EventArgs e)
     {
-        if (sender is Button button &&
-            button.BindingContext is Models.Counter counter)
-        {
-            int index = allcounter.counters.IndexOf(counter);
+        Button button = (Button)sender;
+        Counter counter = (Counter)button.BindingContext;
 
-            counter.StartCount++;
+        counter.CurrentCount++;
 
-            allcounter.counters[index] = new Models.Counter
-            {
-                Name = counter.Name,
-                StartCount = counter.StartCount
-            };
-
-            CounterStorage.SaveCounters(allcounter.counters.ToList());
-        }
+        CounterStorage.SaveCounters(allcounter.counters.ToList());
     }
 
     private void SubCounter_Clicked(object sender, EventArgs e)
     {
-        if (sender is Button button &&
-            button.BindingContext is Models.Counter counter)
-        {
-            int index = allcounter.counters.IndexOf(counter);
+        Button button = (Button)sender;
+        Counter counter = (Counter)button.BindingContext;
 
-            counter.StartCount--;
+        counter.CurrentCount--;
 
-            allcounter.counters[index] = new Models.Counter
-            {
-                Name = counter.Name,
-                StartCount = counter.StartCount
-            };
-
-            CounterStorage.SaveCounters(allcounter.counters.ToList());
-        }
+        CounterStorage.SaveCounters(allcounter.counters.ToList());
     }
 
-    private async void GoTo_CreateCounterPage(object sender, EventArgs e)
+    private async void GoTo_CreateCounterPage(
+        object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(AddCounterPage));
     }
