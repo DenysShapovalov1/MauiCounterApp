@@ -41,7 +41,7 @@ namespace CounterProject.Models
         {
             List<Counter> counters = new List<Counter>();
 
-            if (File.Exists(FilePath) == false)
+            if (!File.Exists(FilePath))
             {
                 return counters;
             }
@@ -97,7 +97,7 @@ namespace CounterProject.Models
 
         public static int LoadStandardCounter()
         {
-            if (File.Exists(FilePath) == false)
+            if (!File.Exists(FilePath))
             {
                 return 0;
             }
